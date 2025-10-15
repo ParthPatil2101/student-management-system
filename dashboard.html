@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — StudentMgmt</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+  <aside class="sidebar">
+    <div class="side-brand">
+      <h2><span class="accent">Student</span>Mgmt</h2>
+      <button class="collapse-btn" id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <nav class="side-nav">
+      <a class="nav-item active" href="#"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a class="nav-item" href="#profile"><i class="fa-solid fa-user"></i> Profile</a>
+      <a class="nav-item" href="#attendance"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
+      <a class="nav-item" href="#courses"><i class="fa-solid fa-book"></i> Courses</a>
+      <a class="nav-item" href="#assignments"><i class="fa-solid fa-clipboard-list"></i> Assignments</a>
+      <a class="nav-item" href="#grades"><i class="fa-solid fa-chart-line"></i> Grades</a>
+      <a class="nav-item" href="#notifications"><i class="fa-solid fa-bell"></i> Notifications</a>
+      <a class="nav-item" id="logoutBtn" href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div class="searchbar">
+        <input id="searchInput" placeholder="Search courses, events, assignments..." />
+        <button id="searchBtn" class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="top-actions">
+        <div class="notif" id="notifIcon"><i class="fa-solid fa-bell"></i><span class="badge" id="notifCount">3</span></div>
+        <div class="avatar" id="topAvatar"><i class="fa-solid fa-user"></i></div>
+      </div>
+    </header>
+
+    <section class="dashboard-grid">
+      <!-- Welcome -->
+      <div class="welcome-card card">
+        <div>
+          <h3 id="welcomeTitle">Welcome, Student</h3>
+          <p class="muted" id="welcomeSub">Here's your overview for today</p>
+        </div>
+        <div class="quick-stats">
+          <div class="stat">
+            <h4 id="stat-attend">0%</h4>
+            <p class="muted small">Attendance</p>
+          </div>
+          <div class="stat">
+            <h4 id="stat-courses">0</h4>
+            <p class="muted small">Courses</p>
+          </div>
+          <div class="stat">
+            <h4 id="stat-assign">0</h4>
+            <p class="muted small">Due</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Summary -->
+      <div id="profile" class="card profile-card">
+        <div class="profile-header">
+          <h4>Profile Summary</h4>
+          <button id="editProfileBtn" class="icon-btn"><i class="fa-solid fa-pen"></i></button>
+        </div>
+        <div class="profile-body">
+          <div class="profile-avatar"><i class="fa-solid fa-user-graduate"></i></div>
+          <div class="profile-info">
+            <h3 id="p-name">Name</h3>
+            <p id="p-email" class="muted small">email</p>
+            <p id="p-dept" class="muted small">Department</p>
+            <p id="p-course" class="muted small">Course • Year</p>
+            <p id="p-contact" class="muted small">Contact</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Tracker -->
+      <div id="attendance" class="card attendance-card">
+        <div class="card-header">
+          <h4>Attendance Tracker</h4>
+          <small class="muted">Mark your presence and view progress</small>
+        </div>
+        <div class="attendance-body">
+          <div class="attendance-visual">
+            <div class="progress-wrap">
+              <div class="progress-value" id="attendancePercent">0%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="attendanceFill" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="attendance-controls">
+              <button id="markPresent" class="btn">Mark Present</button>
+              <button id="markAbsent" class="btn btn-ghost">Mark Absent</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses list -->
+      <div id="courses" class="card courses-card">
+        <div class="card-header">
+          <h4>Course List</h4>
+          <small class="muted">Your enrolled courses</small>
+        </div>
+        <ul id="courseList" class="course-list">
+          <!-- dynamically populated -->
+        </ul>
+      </div>
+
+      <!-- Assignments -->
+      <div id="assignments" class="card assignments-card">
+        <div class="card-header">
+          <h4>Upcoming Assignments</h4>
+          <small class="muted">Due dates & progress</small>
+        </div>
+        <div id="assignmentList" class="assignment-list">
+          <!-- dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Grades Chart -->
+      <div id="grades" class="card grades-card">
+        <div class="card-header">
+          <h4>Grades Overview</h4>
+          <small class="muted">Term wise performance</small>
+        </div>
+        <canvas id="gradesChart" height="150"></canvas>
+      </div>
+
+      <!-- Notifications -->
+      <div id="notifications" class="card notifications-card">
+        <div class="card-header">
+          <h4>Notifications</h4>
+          <small class="muted">Important updates</small>
+        </div>
+        <ul id="notificationsList" class="notif-list">
+          <!-- dynamic -->
+        </ul>
+      </div>
+
+      <!-- Calendar/Schedule -->
+      <div class="card calendar-card">
+        <div class="card-header">
+          <h4>My Schedule</h4>
+          <small class="muted">A simple week preview</small>
+        </div>
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- simple slots for days -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer small actions -->
+    <footer class="footer">
+      <small class="muted">StudentMgmt • Responsive dashboard demo • No backend — data stored locally</small>
+    </footer>
+  </main>
+
+  <!-- Profile Edit Modal (simple) -->
+  <div id="profileModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Edit Profile</h3>
+        <button id="closeModal" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editName">Full Name</label>
+          <input id="editName" />
+        </div>
+        <div class="form-group">
+          <label for="editContact">Contact Number</label>
+          <input id="editContact" />
+        </div>
+        <div class="form-group">
+          <label for="editAddress">Address</label>
+          <textarea id="editAddress" rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button id="saveProfile" class="btn btn-primary">Save</button>
+          <button id="cancelProfile" class="btn btn-ghost">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
